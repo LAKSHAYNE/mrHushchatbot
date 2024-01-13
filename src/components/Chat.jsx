@@ -1,16 +1,23 @@
 import React from "react";
+import Typing from "./Typing";
 
-function Chat({ num, id, from, item }) {
+function Chat({ from, num, item, thinking = false }) {
   return (
     <div
+      key={item.id}
       className="items-end flex flex-row"
       style={{
         marginTop: num == "1" ? "auto" : "10px",
         gap: "8px",
-        width: "calc(100vw - 500px )",
+        width: "calc(100vw - 200px )",
       }}
     >
-      <img className="flex h-8" src="images/ai.svg" />
+      {from == "user" ? (
+        <img className="flex h-8" src="images/user.svg" />
+      ) : (
+        <img className="flex h-8" src="images/ai.svg" />
+      )}
+
       <div
         style={{
           backgroundColor: "#424769",
@@ -18,7 +25,7 @@ function Chat({ num, id, from, item }) {
           borderRadius: "10px",
         }}
       >
-        <p>{item.data.message}</p>
+        {thinking ? <Typing /> : <p>{item.data.message}</p>}
       </div>
     </div>
   );

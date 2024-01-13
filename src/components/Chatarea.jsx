@@ -11,22 +11,48 @@ import {
   orderBy,
 } from "firebase/firestore";
 import Chat from "./Chat";
+import OpenAI from "openai";
+
 function Chatarea() {
+  const openai = new OpenAI({
+    apiKey: process.env.REACT_APP_OPENAI_KEY,
+    dangerouslyAllowBrowser: true, // This is also the default, can be omitted
+  });
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
+  const [thinking, setThinking] = useState(false);
   const submitMessage = async () => {
-    console.log(message);
-    await addDoc(collection(db, "chats/school/messages"), {
+    await addDoc(collection(db, "chats/ai/messages"), {
       message: message,
       createdAt: Timestamp.now(),
       from: "user",
     });
     setMessage("");
+    setThinking(true);
+    getAiRes().then(async (res) => {
+      console.log(res["message"]["content"]);
+      await addDoc(collection(db, "chats/ai/messages"), {
+        message: res["message"]["content"],
+        createdAt: Timestamp.now(),
+        from: "ai",
+      });
+      setThinking(false);
+    });
+  };
+
+  const getAiRes = async () => {
+    const completion = await openai.chat.completions.create({
+      messages: [{ content: message, name: "Lakshay", role: "assistant" }],
+      model: "gpt-3.5-turbo",
+      user: "Lakshay",
+      max_tokens: 50,
+    });
+    return completion.choices[0];
   };
 
   useEffect(() => {
     const q = query(
-      collection(db, "chats/school/messages"),
+      collection(db, "chats/ai/messages"),
       orderBy("createdAt", "asc")
     );
     onSnapshot(q, (querySnapshot) => {
@@ -49,10 +75,44 @@ function Chatarea() {
         flexFlow: "column noWrap",
       }}
     >
-      {chats.map((item, index, id, from) => (
-        <Chat num={index + 1} id={id} from={from} item={item} />
-      ))}
-      <div className="items-center flex w-full">
+      {chats.length == 0 && (
+        <Chat
+          from="ai"
+          key={31531324153}
+          num={"1"}
+          item={{
+            id: 97975649,
+            data: { message: "Please type something to start" },
+          }}
+          thinking={false}
+        />
+      )}
+      <div>
+        {chats.map((item, index) => (
+          <Chat
+            from={item.data.from}
+            key={item.data.id}
+            num={index + 1}
+            item={item}
+          />
+        ))}
+        {thinking && (
+          <Chat
+            from="ai"
+            key={31531324153}
+            num={100000}
+            item={{ id: 97975649 }}
+            thinking={true}
+          />
+        )}
+      </div>
+      <div style={{ height: "20px", width: "100%", marginTop: "30px" }}>
+        ---
+      </div>
+      <div
+        className="items-center flex"
+        style={{ position: "fixed", width: "96%", bottom: "0px" }}
+      >
         <input
           value={message}
           onKeyPress={(event) => {
