@@ -1,3 +1,38 @@
+# Mr Hush Chatbot
+
+Hush Chatbot is a project built with a fine-tuned ChatGPT 3.5 turbo model to generate sarcastic responses. Users can interact with the chatbot, and conversations are stored in Firebase for future reference.
+
+## Demo
+
+Check out the live demo [here](https://mr-hushchatbot.vercel.app/).
+
+## Features
+
+- **Sarcastic Responses:** The chatbot is trained to provide mostly sarcastic responses for an engaging user experience.
+- **Firebase Integration:** Conversations are stored in Firebase for easy management and user review.
+
+## Technologies Used
+
+- React: Frontend framework
+- ChatGPT 3.5 turbo: Fine-tuned model for generating sarcastic responses
+- Firebase: Realtime Database for storing chat conversations
+- Vercel: Deployment platform
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js installed
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/your-username/hush-chatbot.git
+   cd hush-chatbot
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
