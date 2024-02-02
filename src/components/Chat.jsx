@@ -9,7 +9,7 @@ function Chat({ from, num, item, thinking = false }) {
       style={{
         marginTop: num == "1" ? "auto" : "10px",
         gap: "8px",
-        width: "calc(100vw - 200px )",
+        width: "calc(100vw - 37px )",
       }}
     >
       {from == "user" ? (

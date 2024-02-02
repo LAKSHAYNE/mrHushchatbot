@@ -22,7 +22,7 @@ function Chatarea() {
   const [chats, setChats] = useState([]);
   const [thinking, setThinking] = useState(false);
   const submitMessage = async () => {
-    await addDoc(collection(db, "chats/ai/messages"), {
+    await addDoc(collection(db, "chats/fordemo/messages"), {
       message: message,
       createdAt: Timestamp.now(),
       from: "user",
@@ -31,7 +31,7 @@ function Chatarea() {
     setThinking(true);
     getAiRes().then(async (res) => {
       console.log(res["message"]["content"]);
-      await addDoc(collection(db, "chats/ai/messages"), {
+      await addDoc(collection(db, "chats/fordemo/messages"), {
         message: res["message"]["content"],
         createdAt: Timestamp.now(),
         from: "ai",
@@ -42,17 +42,23 @@ function Chatarea() {
 
   const getAiRes = async () => {
     const completion = await openai.chat.completions.create({
-      messages: [{ content: message, name: "Lakshay", role: "assistant" }],
-      model: "gpt-3.5-turbo",
-      user: "Lakshay",
+      messages: [
+        {
+          role: "system",
+          content: "Marv is a factual chatbot that is also sarcastic.",
+        },
+        { role: "user", content: message },
+      ],
+      model: "ft:gpt-3.5-turbo-1106:personal::8iem0ksh",
       max_tokens: 50,
     });
+    console.log(completion.choices[0]);
     return completion.choices[0];
   };
 
   useEffect(() => {
     const q = query(
-      collection(db, "chats/ai/messages"),
+      collection(db, "chats/fordemo/messages"),
       orderBy("createdAt", "asc")
     );
     onSnapshot(q, (querySnapshot) => {
@@ -82,7 +88,10 @@ function Chatarea() {
           num={"1"}
           item={{
             id: 97975649,
-            data: { message: "Please type something to start" },
+            data: {
+              message:
+                "The token limit is upto 50 so there maybe some sentences that might be incomplete. Powered by openAI.",
+            },
           }}
           thinking={false}
         />
